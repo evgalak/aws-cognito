@@ -259,7 +259,7 @@ class CognitoClient
         $this->userPoolId = $userPoolId;
     }
 
-    /**
+      /**
      * Verifies the given access token and returns the username
      *
      * @param string $accessToken
@@ -282,16 +282,16 @@ class CognitoClient
             throw new TokenVerificationException('invalid iss');
         }
 
-        if ($jwtPayload['token_use'] !== 'access') {
+        if ( !in_array($jwtPayload['token_use'], ['id','access']) ) {
             throw new TokenVerificationException('invalid token_use');
         }
 
         if ($jwtPayload['exp'] < time()) {
             throw new TokenExpiryException('invalid exp');
         }
-
-        return $jwtPayload['username'];
-    }
+        
+        return $jwtPayload['username'] ?? $jwtPayload['cognito:username'];
+    } 
 
     /**
      * @param string $username
